@@ -1,63 +1,74 @@
-# Potato Leaf Disease Classification using Deep Learning (CNN)
+# 🥔 Potato Leaf Disease Classification using Deep Learning
 
-## Project Overview
+[![Python](https://img.shields.io/badge/Python-3.x-blue)]()
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-CNN-orange)]()
+[![Streamlit](https://img.shields.io/badge/Streamlit-Deployed-red)]()
+[![Computer Vision](https://img.shields.io/badge/Computer%20Vision-Image%20Classification-green)]()
 
-Plant diseases significantly impact crop yield and food security worldwide. Early and accurate disease detection can help farmers take corrective action before infections spread.
+## Live Demo
 
-This project develops a **Convolutional Neural Network (CNN)** using **TensorFlow/Keras** to automatically classify potato leaf images into three categories:
-
-* 🟢 Healthy
-* 🟤 Early Blight
-* ⚫ Late Blight
-
-The model learns visual disease patterns directly from images and can be used as the foundation for real-world agricultural diagnostic applications.
+🚀 **Try the application:** [https://potatodiseasedetection-shhnbmxunxve2kftjqdwzn.streamlit.app/]
 
 ---
 
-## Business Problem
+# Project Overview
 
-Manual disease diagnosis requires agricultural expertise and can be time-consuming, especially in large farming operations.
+Plant diseases can significantly reduce crop yield and food quality, creating major economic losses for farmers worldwide. Early detection is critical but often requires manual inspection and agricultural expertise.
 
-The objective of this project is to:
+This project uses a Convolutional Neural Network (CNN) built with TensorFlow and Keras to automatically classify potato leaf images into three categories:
 
-* Detect potato diseases from leaf images
-* Reduce reliance on manual inspection
-* Enable faster disease identification
-* Demonstrate the application of deep learning in precision agriculture
+* Healthy
+* Early Blight
+* Late Blight
+
+The trained model has been deployed as an interactive Streamlit web application, allowing users to upload leaf images and receive instant disease predictions.
 
 ---
 
-## Dataset
+# Business Problem
 
-The project uses the **PlantVillage Potato Dataset**, containing labeled images of potato leaves.
+Farmers and agricultural specialists need a fast and scalable way to identify plant diseases before they spread across crops.
+
+Manual diagnosis can be:
+
+* Time-consuming
+* Subjective
+* Difficult to scale
+
+The goal of this project is to demonstrate how Deep Learning and Computer Vision can automate disease detection and support faster agricultural decision-making.
+
+---
+
+# Dataset
+
+This project uses the PlantVillage Potato Leaf Dataset.
 
 ### Classes
 
-| Class        | Description                                      |
-| ------------ | ------------------------------------------------ |
-| Healthy      | No disease symptoms                              |
-| Early Blight | Fungal disease causing leaf damage               |
-| Late Blight  | Severe disease responsible for major crop losses |
+| Class        | Description                                           |
+| ------------ | ----------------------------------------------------- |
+| Healthy      | No visible disease symptoms                           |
+| Early Blight | Fungal disease affecting potato plants                |
+| Late Blight  | Highly destructive disease causing severe crop losses |
 
-### Image Processing
+### Image Characteristics
 
-All images are:
-
-* Resized to **256 × 256**
-* Converted to RGB format
-* Normalized to pixel values between **0 and 1**
+* RGB Images
+* Resized to 256 × 256 pixels
+* Normalized before training
 
 ---
 
-## Technical Approach
+# Solution Approach
 
-### 1. Data Pipeline
+## Data Pipeline
 
-TensorFlow's `image_dataset_from_directory()` was used to:
+TensorFlow's image data pipeline was used to:
 
-* Load images directly from storage
+* Load images efficiently
 * Automatically generate labels
-* Batch data efficiently
+* Create batches for training
+* Optimize performance through caching and prefetching
 
 Dataset split:
 
@@ -67,213 +78,197 @@ Dataset split:
 | Validation | 10%        |
 | Test       | 10%        |
 
-Additional optimizations:
-
-* Caching
-* Shuffling
-* Prefetching
-
-These techniques improve GPU utilization and training speed.
-
 ---
 
-### 2. Data Augmentation
+## Data Augmentation
 
-To improve model generalization and reduce overfitting, the training dataset was augmented using:
+To improve generalization and reduce overfitting, the following augmentation techniques were applied:
 
 * Random horizontal flips
 * Random vertical flips
 * Random rotations
 
-This exposes the model to a wider variety of leaf orientations.
+This helps the model learn robust disease patterns regardless of image orientation.
 
 ---
 
-### 3. CNN Architecture
+## CNN Architecture
 
 The model consists of:
 
-* Input preprocessing layer
+* Image preprocessing layer
 * Multiple convolutional layers
-* Max pooling layers
-* Fully connected dense layers
+* MaxPooling layers
+* Dense layers
 * Softmax output layer
 
-Architecture summary:
+Architecture flow:
 
-```text
-Input Image (256x256x3)
-        ↓
-Rescaling Layer
-        ↓
-Conv2D (32 filters)
-        ↓
+Input Image
+
+↓
+
+Rescaling
+
+↓
+
+Conv2D + ReLU
+
+↓
+
 MaxPooling
-        ↓
-Conv2D (64 filters)
-        ↓
+
+↓
+
+Conv2D + ReLU
+
+↓
+
 MaxPooling
-        ↓
-Conv2D (64 filters)
-        ↓
+
+↓
+
+Conv2D + ReLU
+
+↓
+
 MaxPooling
-        ↓
-Conv2D (64 filters)
-        ↓
-MaxPooling
-        ↓
-Conv2D (64 filters)
-        ↓
-MaxPooling
-        ↓
-Conv2D (64 filters)
-        ↓
-MaxPooling
-        ↓
-Flatten
-        ↓
-Dense (64)
-        ↓
-Dense (3, Softmax)
-```
+
+↓
+
+Dense Layers
+
+↓
+
+Softmax Output (3 Classes)
+
+The network learns hierarchical visual features such as:
+
+* Leaf texture
+* Disease spots
+* Color variations
+* Damage patterns
 
 ---
 
-## Model Training
+# Model Training
 
-### Configuration
+### Frameworks
 
-```python
-BATCH_SIZE = 32
-IMAGE_SIZE = 256
-CHANNELS = 3
-EPOCHS = 50
-```
+* TensorFlow
+* Keras
 
-### Training Setup
+### Training Configuration
 
 * Optimizer: Adam
 * Loss Function: Sparse Categorical Crossentropy
-* Metric: Accuracy
+* Evaluation Metric: Accuracy
+* Epochs: 50
+* Batch Size: 32
 
-```python
-model.compile(
-    optimizer='adam',
-    loss='sparse_categorical_crossentropy',
-    metrics=['accuracy']
-)
-```
+The model was trained on augmented images and evaluated on a separate unseen test set.
 
 ---
 
-## Evaluation
+# Model Evaluation
 
-The model was evaluated on a completely unseen test dataset.
-
-```python
-scores = model.evaluate(test_ds)
-```
-
-Performance was monitored through:
+The model's performance was monitored using:
 
 * Training Accuracy
 * Validation Accuracy
 * Training Loss
 * Validation Loss
 
-Learning curves were plotted to analyze convergence and potential overfitting.
+Learning curves were analyzed throughout training to monitor convergence and identify potential overfitting.
 
 ---
 
-## Inference Pipeline
+# Deployment
 
-A prediction function was created to:
+The trained CNN model was deployed using Streamlit to create a user-friendly web application.
 
-1. Accept a leaf image
-2. Generate class probabilities
-3. Return:
+### Application Features
 
-   * Predicted disease
-   * Confidence score
+✅ Upload potato leaf images
 
-Example output:
+✅ Real-time disease prediction
 
-```text
-Actual: Potato___Late_blight
-Predicted: Potato___Late_blight
+✅ Confidence score display
+
+✅ Accessible through any web browser
+
+✅ No coding knowledge required
+
+### Deployment Stack
+
+* TensorFlow / Keras
+* Streamlit
+* Python
+* Streamlit Community Cloud
+
+This deployment demonstrates the ability to move a machine learning model from experimentation to a production-facing application.
+
+---
+
+# Example Workflow
+
+1. User uploads a potato leaf image
+2. Application preprocesses the image
+3. CNN model generates prediction probabilities
+4. Predicted disease class is returned
+5. Confidence score is displayed
+
+Example:
+
+Prediction: Late Blight
+
 Confidence: 98.6%
-```
 
 ---
 
-## Key Skills Demonstrated
-
-### Deep Learning
-
-* Convolutional Neural Networks (CNNs)
-* Image Classification
-* Transferable Computer Vision Concepts
-
-### TensorFlow / Keras
-
-* Data pipelines
-* Dataset optimization
-* Model training
-* Model evaluation
-* Model persistence
-
-### Machine Learning Engineering
-
-* Train/Validation/Test splitting
-* Data augmentation
-* Performance monitoring
-* Production-ready inference functions
-
----
-
-## Project Structure
+# Project Structure
 
 ```text
 Potato-Disease-Classification/
 │
+├── app.py
 ├── Potato_Disease_Classification.ipynb
+├── requirements.txt
+├── saved_model/
+│   └── Potato_Disease_Model.keras
+│
 ├── dataset/
 │   ├── Potato___Healthy/
 │   ├── Potato___Early_blight/
 │   └── Potato___Late_blight/
-│
-├── saved_model/
-│   └── Potato_Disease_Model.keras
 │
 ├── images/
 │
 └── README.md
 ```
 
----
+# Skills Demonstrated
 
-## Future Improvements
+### Machine Learning
 
-Potential enhancements include:
+* Supervised Learning
+* Multi-Class Classification
+* Model Evaluation
 
-* Transfer Learning using
+### Deep Learning
 
-  * EfficientNet
-  * ResNet
-  * MobileNet
-* Hyperparameter tuning
-* Model explainability with Grad-CAM
-* Deployment using Flask/FastAPI
-* Mobile inference for field use
-* Real-time disease detection from smartphone images
+* Convolutional Neural Networks (CNNs)
+* Image Classification
+* Data Augmentation
 
----
+### Machine Learning Engineering
 
-## Impact
+* Data Pipelines
+* Model Serialization
+* Performance Optimization
+* Deployment Workflows
 
-This project demonstrates how deep learning can be applied to agriculture to automate disease detection and support faster decision-making. Beyond the specific potato dataset, the workflow can be adapted to other crops and plant diseases, making it a strong example of an end-to-end computer vision project.
-
-### Technologies Used
+### Tools & Technologies
 
 * Python
 * TensorFlow
@@ -281,12 +276,45 @@ This project demonstrates how deep learning can be applied to agriculture to aut
 * NumPy
 * Matplotlib
 * Google Colab
+* Streamlit
+* GitHub
 
 ---
 
-### Author
+# Future Improvements
 
-**Franck Fossi**
+Potential enhancements include:
 
-Machine Learning & Data Science Portfolio Project focused on Computer Vision, CNNs, and Agricultural AI applications.
-# Potato_disease_Detection
+* Transfer Learning with EfficientNet or ResNet
+* Hyperparameter Optimization
+* Grad-CAM Explainability
+* Mobile Deployment
+* Real-Time Camera Predictions
+* Support for Additional Crop Diseases
+
+---
+
+# Impact
+
+This project demonstrates an end-to-end Machine Learning workflow:
+
+* Data Collection and Preparation
+* Computer Vision Modeling
+* CNN Training and Evaluation
+* Model Saving and Versioning
+* Web Application Deployment
+
+By deploying the model through Streamlit, the solution becomes accessible to non-technical users and showcases the practical application of AI in agriculture.
+
+The project highlights skills in Deep Learning, Computer Vision, TensorFlow, Model Deployment, and production-oriented Machine Learning development.
+
+---
+
+# Author
+
+## Franck Fossi
+
+### Connect With Me
+
+* LinkedIn: [https://www.linkedin.com/in/franck-fossi-538704248/]
+* GitHub: [https://github.com/dashboard]
